@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ToDo List</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>ToDo List</h1>
+    <form id="task-form">
+        <input type="text" id="task-input" placeholder="Enter task title">
+        <button type="submit">Add Task</button>
+    </form>
+    <ul id="task-list">
+        <!-- Tasks will be loaded here -->
+    </ul>
+
+    <script>
+    var tasks = [];
+
+    function fetchTasks() {
+        $('#task-list').empty();
+        tasks.forEach(function(task, index) {
+            $('#task-list').append('<li class="task-item" data-id="' + index + '">' + task.title + '<button class="delete-task" data-id="' + index + '">Delete</button></li>');
+        });
+    }
+
+    function addTask(title) {
+        tasks.push({ title: title, completed: false });
+    }
+
+    function updateTask(id, completed) {
+        tasks[id].completed = completed;
+    }
+
+    function deleteTask(id) {
+        tasks.splice(id, 1);
+    }
+
+    $(document).ready(function() {
+        // Fetch tasks and render them in the browser
+        fetchTasks();
+
+        // Add task form submission
+        $('#task-form').on('submit', function(e) {
+            e.preventDefault();
+            addTask($('#task-input').val());
+            fetchTasks();
+            $('#task-input').val('');
+        });
+
+        // Task list item click event
+        $('body').on('click', '.task-item', function() {
+            var id = $(this).data('id');
+            updateTask(id, $(this).prop('checked'));
+        });
+
+        // Task delete button click event
+        $('body').on('click', '.delete-task', function() {
+            var id = $(this).data('id');
+            deleteTask(id);
+            fetchTasks();
+        });
+    });
+    </script>
+</body>
+</html>
